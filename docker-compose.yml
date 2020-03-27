@@ -8,7 +8,7 @@ networks:
 services:
   wordpress:
     build: .
-    restart: always
+    restart: unless-stopped
     environment:
       WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
       WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
@@ -23,7 +23,23 @@ services:
       - backend
       - traefik_net
     labels:
-    - "traefik.enable=true"
-    - "traefik.port=80"
-    - "traefik.frontend.rule=Host:${WORDPRESS_URL}"
-    - "traefik.docker.network=traefik_net"
+      - "traefik.enable=true"
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:${WORDPRESS_URL}"
+      - "traefik.docker.network=traefik_net"
+    depends_on: 
+      - db
+
+  database:
+    image: mysql:5.7
+    volumes:
+      - "${DB_VOLUME}:/var/lib/mysql"
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      MYSQL_DATABASE: ${WORDPRESS_DB_NAME}
+      MYSQL_USER: ${WORDPRESS_DB_USER}
+      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+    networks:
+      - backend
+  
