@@ -28,7 +28,7 @@ services:
       - "traefik.frontend.rule=Host:${WORDPRESS_URL}"
       - "traefik.docker.network=traefik_net"
     depends_on: 
-      - db
+      - database
 
   database:
     image: mysql:5.7
