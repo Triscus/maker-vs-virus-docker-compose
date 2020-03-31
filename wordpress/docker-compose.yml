@@ -43,3 +43,13 @@ services:
     networks:
       - backend
   
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8081:80
+    depends_on: 
+      - database
+    environment:
+      PMA_HOST: database
+    networks:
+      - backend
